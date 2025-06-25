@@ -4,5 +4,4 @@ __pycache__/
 *.xlsx
 *.csv
 
-# Migration into SQL - not ready yet
-Create.sql
+config/paths.py
