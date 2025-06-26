@@ -17,8 +17,6 @@ if __name__ == "__main__":
 
     pipeline = SARPipeline(sales_file_map, dimensions_file_map)
     pipeline.load_data()
-    pipeline.prepare_csv()
-
-    print(pipeline.output_data.info())
-    print(pipeline.output_data.head())
+    pipeline._process_data()
+    pipeline.export_output()
 
