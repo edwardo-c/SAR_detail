@@ -10,11 +10,16 @@ if __name__ == "__main__":
         {"alias":"2024_pos", "file":SALES_PATH_2024, "sheet_name":"POS", "row":2},
     )
 
-    dimensions_file_map = {"file": DIMENSIONS_PATH, "dims_tab": ["users", "pro_av", "quotas"], "row":0}
+    dimensions_file_map = (
+        {"alias": "users", "file": DIMENSIONS_PATH, "sheet_name": "users", "row":0},
+        {"alias": "pro_av", "file": DIMENSIONS_PATH, "sheet_name":"pro_av", "row": 0},
+        {"alias": "quotas", "file": DIMENSIONS_PATH, "sheet_name":"quotas", "row": 0},
+        )
 
     pipeline = SARPipeline(sales_file_map, dimensions_file_map)
-    pipeline.load_sales()
+    pipeline.load_data()
 
-    for alias, df in pipeline.sales_dfs.items():
+    for alias, df in pipeline.dimensions_dfs.items():
+        print(f"Info for: {alias}")
         print(df.info())
 

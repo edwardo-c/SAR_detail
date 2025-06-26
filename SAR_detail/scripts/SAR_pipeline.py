@@ -2,23 +2,34 @@ import pandas as pd
 
 
 class SARPipeline():
-    def __init__(self, sales_file_maps: dict, dimensions_file_map: dict):
-        self.sales_file_maps = sales_file_maps
+    def __init__(self, sales_file_map: set, dimensions_file_map: set):
+        self.sales_file_map = sales_file_map
         self.dimensions_file_map = dimensions_file_map
         self.sales_dfs = {}
-        self.qoutas_dfs = {}
+        self.dimensions_dfs = {}
     
-    def load_sales(self):
-            for map in self.sales_file_maps:
-                 self.sales_dfs[map["alias"]] = pd.read_excel(map["file"], 
-                                                              sheet_name=map["sheet_name"], 
-                                                              header=map["row"]
-                                                              )
-    
+    @staticmethod
+    def read_file_map(file_map):
+        '''
+        returns: dict of {alias : dataframe}
+        '''
+        return {
+            entry['alias']: 
+            pd.read_excel(
+                entry["file"], 
+                sheet_name=entry["sheet_name"], 
+                header=entry["row"]
+                )
+                for entry in file_map
+            }
 
-    def load_dimensions(self):
+    def load_data(self):
+        self.sales_dfs = self.read_file_map(self.sales_file_map)
+        self.dimensions_dfs = self.read_file_map(self.dimensions_file_map)
+
+
+    def transform_sales(self):
+        '''
+        
+        '''
         ...
-
-
-
-    ...
