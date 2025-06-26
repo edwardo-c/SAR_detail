@@ -1,18 +1,6 @@
 import pandas as pd
 from config.paths import CSV_EXPORT_PATH
 
-POS_COLUMNS = [
-    "credit",
-    "reclass",
-    "distributor",
-    "customer_name",
-    "part_number",
-    "product_category",
-    "qty",
-    "amount",
-    "credit_date",
-    ]
-
 class SARPipeline():
     def __init__(self, sales_file_map: set, dimensions_file_map: set):
         self.sales_file_map = sales_file_map
@@ -39,13 +27,7 @@ class SARPipeline():
     def load_data(self):
         self.sales_dfs = self.read_file_map(self.sales_file_map)
         self.dimensions_dfs = self.read_file_map(self.dimensions_file_map)
-
-    def _transform_pos_data():
-        ...
     
-    def parse_alias(alias):
-        year, source = alias.split("_", 1)
-        return year, source
 
     @staticmethod
     def _rename_map() -> dict:
@@ -65,6 +47,7 @@ class SARPipeline():
             "2025_pos": {
                 "Credit": "credit",
                 "Reclass": "reclass",
+                "pay_structure": "pay_structure",
                 "Customer": "distributor",
                 "SoldToName": "customer_name",
                 "PiiPartNumber": "part_number",
@@ -92,7 +75,8 @@ class SARPipeline():
                 "PiiCategory": "product_category",
                 "ShipQuantity": "qty",
                 "ExtendedSales": "amount",
-                "PeriodDate": "credit_date"
+                "PeriodDate": "credit_date",
+                "pay_structure": "pay_structure",
             },
         }
 
@@ -137,6 +121,10 @@ class SARPipeline():
         rename_map = self._rename_map()
 
         for alias, df in self.sales_dfs.items():
+            
+            if "pos" in alias:
+                df["pay_structure"] = "pos"
+            
             df = self.rename_columns(df, rename_map[alias])
             self.sales_dfs[alias] = df
 
