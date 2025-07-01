@@ -68,7 +68,7 @@ class SARPipeline():
                 "Invoice Date": "credit_date",
             },
             "2024_pos": {
-                "2025 Rep": "credit",
+                "2025 Credit": "credit",
                 "Customer": "distributor",
                 "SoldToName": "customer_name",
                 "PiiPartNumber": "part_number",
@@ -114,6 +114,12 @@ class SARPipeline():
         self.output_data["credit_month"] = self.output_data["credit_date"].dt.month
         self.output_data["credit_year"] = self.output_data["credit_date"].dt.year
     
+    def _add_rep_role_key(self):
+        self.output_data["rep_role_key"] = (
+            self.output_data["rep"].astype(str) + "|" + self.output_data["product_category"]
+            )
+
+    
     def export_output(self, path=CSV_EXPORT_PATH):
         self.output_data.to_csv(path, index=False)
 
@@ -133,3 +139,4 @@ class SARPipeline():
         self.output_data = self._join_users()
         self._fill_missing_part_numbers()
         self._split_credit_date()
+        self._add_rep_role_key()
