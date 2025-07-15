@@ -1,22 +1,22 @@
-from config.paths import CSV_EXPORT_PATH, DATABASE
 import pandas as pd
 from sqlalchemy import create_engine, text
 
-# 1. Load CSV into DataFrame
-df = pd.read_csv(CSV_EXPORT_PATH)
+def import_into_mssql(df:pd.DataFrame, database:str, table:str, keep_schema:bool=True, if_exists:str='append'):
+    '''
+    Upload data to existing database table.
+    Clears existing data and imports new data set
+    '''
 
-# Optional: Clean/rename columns
-# df.columns = ['id', 'sale_date', 'amount', 'product_name']
+    ## match case on behaivor to append or overwrite
+    engine = create_engine(database)
 
-# 2. Connect to SQL Server
-engine = create_engine(DATABASE)
+    # clear existing data without dropping schema
+    if keep_schema:
+        with engine.connect() as conn:
+            conn.execute(text(f"DELETE FROM {table}"))
 
-# 3. clear existing data without dropping schema
-with engine.connect() as conn:
-    conn.execute(text("DELETE FROM sales"))
+    # Push DataFrame to SQL table
+    df.to_sql(table, con=engine, if_exists=if_exists, index=False)
 
-# 4. Push DataFrame to SQL table
-df.to_sql('sales', con=engine, if_exists='append', index=False)
-
-print("✅ Data imported successfully.")
+    print(f"Data import succesfully into {table}")
 
