@@ -20,3 +20,4 @@ if __name__ == "__main__":
     pipeline._process_data()
     pipeline.export_output()
 
+    print("update complete!")
