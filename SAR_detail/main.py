@@ -1,4 +1,5 @@
-from config.paths import SALES_PATH_2024, SALES_PATH_2025, DIMENSIONS_PATH
+from config.paths import SALES_PATH_2024, SALES_PATH_2025, DIMENSIONS_PATH, DATABASE
+from scripts.load import load_into_mssql
 from scripts.SAR_pipeline import SARPipeline
 
 if __name__ == "__main__":
@@ -20,4 +21,7 @@ if __name__ == "__main__":
     pipeline._process_data()
     pipeline.export_output()
 
-    print("update complete!")
+    table = 'sales'
+    load_into_mssql(pipeline.output_data, DATABASE, table)
+
+    print(f"load into {table} table complete")

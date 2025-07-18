@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy import create_engine
 
-def import_into_mssql(df:pd.DataFrame, database:str, table:str, if_exists:str='replace'):
+def load_into_mssql(df:pd.DataFrame, database:str, table:str, if_exists:str='replace'):
     '''
     Upload data to existing database table.
     Clears existing data and imports new data set

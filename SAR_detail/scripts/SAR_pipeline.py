@@ -108,11 +108,38 @@ class SARPipeline():
             self.output_data["product_category"]
         )
 
+    @ staticmethod
+    def _add_month_year(df:pd.DataFrame, date_col:str, year=None, month=None, drop:bool=False):
+        '''
+        adds month and/or year columns to dataframe, optionally drop original column
+        args: 
+            df: dataframe to be modified
+            date_col: name of column containing original date values
+            year: name of the output column containing the year portion
+            month: name of the output column containing the month portion
+            drop (bool): drop original column flag 
+        
+        '''
+        # ensure original column is proper format
+        df[date_col] = pd.to_datetime(df[date_col], errors="coerce")
+
+        if year:
+            df[year] = df[date_col].dt.year
+        
+        if month:
+            df[month] = df[date_col].dt.month
+        
+        if drop:
+            df = df.drop(columns=[date_col])
+        
+        return df
+
     def _split_credit_date(self):
         self.output_data["credit_date"] = pd.to_datetime(self.output_data["credit_date"], errors="coerce")
 
         self.output_data["credit_month"] = self.output_data["credit_date"].dt.month
         self.output_data["credit_year"] = self.output_data["credit_date"].dt.year
+        
     
     def _add_rep_role_key(self):
         self.output_data["rep_role_key"] = (
