@@ -28,13 +28,12 @@ class SARPipeline():
         self.sales_dfs = self.read_file_map(self.sales_file_map)
         self.dimensions_dfs = self.read_file_map(self.dimensions_file_map)
     
-
     @staticmethod
     def _rename_map() -> dict:
         return {
             "2025_direct": {
                 "Credit": "credit",
-                "Reclass" : "reclass", 
+                # "Reclass" : "reclass", 
                 "Account" : "acct_num", 
                 "Customer Name": "customer_name", 
                 "Type": "pay_structure", 
@@ -46,7 +45,7 @@ class SARPipeline():
                 },
             "2025_pos": {
                 "Credit": "credit",
-                "Reclass": "reclass",
+                # "Reclass": "reclass",
                 "pay_structure": "pay_structure",
                 "Customer": "distributor",
                 "SoldToName": "customer_name",
@@ -91,6 +90,10 @@ class SARPipeline():
         return pd.concat(self.sales_dfs.values(), ignore_index=True)
 
     def _unpivot_pro_av(self):
+        '''
+        currently removed from .run() since reclass is being handled in power query
+        until logic can be moved to python
+        '''
         return pd.melt(
             self.output_data,
             id_vars=[col for col in self.output_data.columns if col not in {"credit", "reclass"}],
@@ -140,7 +143,6 @@ class SARPipeline():
         self.output_data["credit_month"] = self.output_data["credit_date"].dt.month
         self.output_data["credit_year"] = self.output_data["credit_date"].dt.year
         
-    
     def _add_rep_role_key(self):
         self.output_data["rep_role_key"] = (
             self.output_data["rep"].astype(str) + "|" + self.output_data["product_category"]
@@ -161,7 +163,7 @@ class SARPipeline():
             self.sales_dfs[alias] = df
 
         self.output_data = self._concat_output_data()
-        self.output_data = self._unpivot_pro_av()
+        # self.output_data = self._unpivot_pro_av()
         self.output_data = self._join_users()
         self._fill_missing_part_numbers()
         self._split_credit_date()
