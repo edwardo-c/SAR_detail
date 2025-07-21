@@ -109,7 +109,7 @@ class SARPipeline():
         )
 
     @ staticmethod
-    def _add_month_year(df:pd.DataFrame, date_col:str, year=None, month=None, drop:bool=False):
+    def _add_month_year(df:pd.DataFrame, date_col:str="credit_date", year=None, month=None, drop:bool=False):
         '''
         adds month and/or year columns to dataframe, optionally drop original column
         args: 
@@ -145,7 +145,6 @@ class SARPipeline():
         self.output_data["rep_role_key"] = (
             self.output_data["rep"].astype(str) + "|" + self.output_data["product_category"]
             )
-
     
     def export_output(self, path=CSV_EXPORT_PATH):
         self.output_data.to_csv(path, index=False)
