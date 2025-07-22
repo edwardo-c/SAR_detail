@@ -1,5 +1,5 @@
--- Return sales by product category
--- joined with rep's quota and % of quota captured calculation
+-- Return total sales by product category
+-- joined with rep's quota
 WITH category_sales AS (
     SELECT
         s.rep,
